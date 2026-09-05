@@ -169,27 +169,28 @@ document.documentElement.className+=' no-lens';}})();
        through, which is the opposite of glass. Keeping the blur soft and
        pushing saturation instead lets the content stay legible underneath
        while the bar still picks up whatever colour is passing below it. */
-    background:rgba(255,255,255,.25);
-    -webkit-backdrop-filter:blur(8px) saturate(235%) brightness(1.06);
-    backdrop-filter:blur(8px) saturate(235%) brightness(1.06);
+    background:rgba(255,255,255,.12);
+    -webkit-backdrop-filter:blur(3px) saturate(250%) brightness(1.05);
+    backdrop-filter:blur(3px) saturate(250%) brightness(1.05);
   }
   html.no-lens header.site.scrolled .nav-inner{
-    background:rgba(255,255,255,.44);
-    -webkit-backdrop-filter:blur(12px) saturate(215%) brightness(1.04);
-    backdrop-filter:blur(12px) saturate(215%) brightness(1.04);
+    background:rgba(255,255,255,.30);
+    -webkit-backdrop-filter:blur(6px) saturate(225%) brightness(1.04);
+    backdrop-filter:blur(6px) saturate(225%) brightness(1.04);
   }
   html.no-lens .nav-inner::before{
     content:"";position:absolute;inset:0;border-radius:inherit;
     pointer-events:none;z-index:0;
     background:
-      linear-gradient(115deg, rgba(141,201,56,.13), rgba(255,255,255,0) 22%),
-      linear-gradient(295deg, rgba(90,150,255,.12), rgba(255,255,255,0) 22%);
+      linear-gradient(115deg, rgba(141,201,56,.10), rgba(255,255,255,0) 20%),
+      linear-gradient(295deg, rgba(90,150,255,.09), rgba(255,255,255,0) 20%);
   }
   html.no-lens .nav-inner > *{position:relative;z-index:1;}
   /* thin glass means page content shows through behind the labels, so they
      get the same whisper of a halo the refracting bar uses */
   html.no-lens .nav-inner .logo, html.no-lens .nav-inner nav.links a{
-    text-shadow:0 1px 2px rgba(255,255,255,.75), 0 0 8px rgba(255,255,255,.6);
+    text-shadow:0 1px 2px rgba(255,255,255,.9), 0 0 6px rgba(255,255,255,.85),
+                0 0 14px rgba(255,255,255,.7);
   }
   /* the wordmark is an image, so text-shadow does nothing for it — it needs a
      drop-shadow of its own to stay readable when a dark section passes under */
