@@ -164,23 +164,38 @@ document.documentElement.className+=' no-lens';}})();
      map would otherwise have drawn. */
   html.no-lens .nav-inner{
     position:relative;
-    background:rgba(255,255,255,.42);
-    -webkit-backdrop-filter:blur(20px) saturate(300%) brightness(1.06);
-    backdrop-filter:blur(20px) saturate(300%) brightness(1.06);
+    /* The blur stays low on purpose. A heavy frost here reads as an opaque
+       band — the page behind disappears and only its average colour bleeds
+       through, which is the opposite of glass. Keeping the blur soft and
+       pushing saturation instead lets the content stay legible underneath
+       while the bar still picks up whatever colour is passing below it. */
+    background:rgba(255,255,255,.25);
+    -webkit-backdrop-filter:blur(8px) saturate(235%) brightness(1.06);
+    backdrop-filter:blur(8px) saturate(235%) brightness(1.06);
   }
   html.no-lens header.site.scrolled .nav-inner{
-    background:rgba(255,255,255,.64);
-    -webkit-backdrop-filter:blur(26px) saturate(255%) brightness(1.04);
-    backdrop-filter:blur(26px) saturate(255%) brightness(1.04);
+    background:rgba(255,255,255,.44);
+    -webkit-backdrop-filter:blur(12px) saturate(215%) brightness(1.04);
+    backdrop-filter:blur(12px) saturate(215%) brightness(1.04);
   }
   html.no-lens .nav-inner::before{
     content:"";position:absolute;inset:0;border-radius:inherit;
     pointer-events:none;z-index:0;
     background:
-      linear-gradient(115deg, rgba(141,201,56,.20), rgba(255,255,255,0) 26%),
-      linear-gradient(295deg, rgba(90,150,255,.17), rgba(255,255,255,0) 26%);
+      linear-gradient(115deg, rgba(141,201,56,.13), rgba(255,255,255,0) 22%),
+      linear-gradient(295deg, rgba(90,150,255,.12), rgba(255,255,255,0) 22%);
   }
   html.no-lens .nav-inner > *{position:relative;z-index:1;}
+  /* thin glass means page content shows through behind the labels, so they
+     get the same whisper of a halo the refracting bar uses */
+  html.no-lens .nav-inner .logo, html.no-lens .nav-inner nav.links a{
+    text-shadow:0 1px 2px rgba(255,255,255,.75), 0 0 8px rgba(255,255,255,.6);
+  }
+  /* the wordmark is an image, so text-shadow does nothing for it — it needs a
+     drop-shadow of its own to stay readable when a dark section passes under */
+  html.no-lens .nav-inner .logo img{
+    filter:drop-shadow(0 0 5px rgba(255,255,255,.75)) drop-shadow(0 0 12px rgba(255,255,255,.5));
+  }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
     .nav-inner{background:rgba(250,249,246,.97);}
   }
