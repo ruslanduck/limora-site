@@ -3,6 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+/* Safari parses url(#id) inside backdrop-filter and answers @supports with
+   "yes", but never renders the SVG lens. Without this flag the bar would take
+   the thin refraction styling and show no glass at all, so WebKit-only engines
+   are marked here and keep the frosted fallback instead. Runs before the
+   stylesheet so there is no flash of the wrong bar. */
+(function(){var u=navigator.userAgent;
+if(/AppleWebKit/.test(u)&&!/Chrome|Chromium|Edg\/|OPR\/|SamsungBrowser/.test(u)){
+document.documentElement.className+=' no-lens';}})();
+</script>
 <title>Limora – The Creative Production OS for Enterprise Content Creation</title>
 <meta name="description" content="Plan, manage inventory, capture, automate post-production, and deliver high-volume product content from a single-tenant, fully customizable enterprise platform.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -125,7 +135,7 @@
        and leans on refraction instead – the same trade the cursor makes.
        Blur drops to almost nothing and the fill thins right out, so what is
        underneath stays sharp and simply bends at the rim. */
-    .nav-inner{
+    html:not(.no-lens) .nav-inner{
       background:rgba(255,255,255,.34);
       -webkit-backdrop-filter:url(#glass-bar-nav) blur(1.5px) saturate(210%) brightness(1.07);
       backdrop-filter:url(#glass-bar-nav) blur(1.5px) saturate(210%) brightness(1.07);
@@ -135,7 +145,7 @@
         0 12px 34px -12px rgba(28,39,64,.24),
         0 2px 6px rgba(28,39,64,.05);
     }
-    header.site.scrolled .nav-inner{
+    html:not(.no-lens) header.site.scrolled .nav-inner{
       background:rgba(255,255,255,.56);
       -webkit-backdrop-filter:url(#glass-bar-nav) blur(3px) saturate(200%) brightness(1.05);
       backdrop-filter:url(#glass-bar-nav) blur(3px) saturate(200%) brightness(1.05);
@@ -143,10 +153,34 @@
     /* the copy now sits on much thinner glass, so give it a whisper of a
        halo – invisible on the light page, but it keeps the labels crisp
        when a dark section scrolls through underneath */
-    .nav-inner .logo, .nav-inner nav.links a{
+    html:not(.no-lens) .nav-inner .logo, html:not(.no-lens) .nav-inner nav.links a{
       text-shadow:0 1px 2px rgba(255,255,255,.7), 0 0 8px rgba(255,255,255,.55);
     }
   }
+  /* Safari (iOS + macOS) — no SVG lens available, so the bar cannot bend the
+     colour underneath it. It leans on a heavy frost and a hard saturation lift
+     instead, which pulls the colour through rather than refracting it, and a
+     two-ended gradient rim stands in for the chromatic edge the displacement
+     map would otherwise have drawn. */
+  html.no-lens .nav-inner{
+    position:relative;
+    background:rgba(255,255,255,.42);
+    -webkit-backdrop-filter:blur(20px) saturate(300%) brightness(1.06);
+    backdrop-filter:blur(20px) saturate(300%) brightness(1.06);
+  }
+  html.no-lens header.site.scrolled .nav-inner{
+    background:rgba(255,255,255,.64);
+    -webkit-backdrop-filter:blur(26px) saturate(255%) brightness(1.04);
+    backdrop-filter:blur(26px) saturate(255%) brightness(1.04);
+  }
+  html.no-lens .nav-inner::before{
+    content:"";position:absolute;inset:0;border-radius:inherit;
+    pointer-events:none;z-index:0;
+    background:
+      linear-gradient(115deg, rgba(141,201,56,.20), rgba(255,255,255,0) 26%),
+      linear-gradient(295deg, rgba(90,150,255,.17), rgba(255,255,255,0) 26%);
+  }
+  html.no-lens .nav-inner > *{position:relative;z-index:1;}
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
     .nav-inner{background:rgba(250,249,246,.97);}
   }
@@ -818,7 +852,11 @@
      makes a wipe read as a retouch rather than a jump cut.
      ========================================================== */
   .rt-demo{position:relative;display:flex;aspect-ratio:1.62/1;background:#0f1424;
-    font-size:11px;line-height:1.4;overflow:hidden;user-select:none;}
+    font-size:11px;line-height:1.4;overflow:hidden;
+    /* the unprefixed property alone leaves Safari highlighting the whole mock
+       the moment the divider is dragged — the prefixed one is what WebKit reads */
+    -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+  .rt-demo img{-webkit-user-drag:none;user-drag:none;}
   .rt-rail{width:40px;flex:0 0 40px;background:#2a2160;display:flex;flex-direction:column;
     align-items:center;padding:9px 0;gap:13px;}
   .rt-rail i{width:15px;height:15px;border-radius:4px;background:rgba(255,255,255,.22);}
@@ -2075,6 +2113,10 @@
     const demo = document.getElementById('rtDemo');
     const div  = document.getElementById('rtDivider');
     let dragging = false;
+    // the intro sweep below animates --pos for 1.4s; if the user grabs the
+    // handle inside that window the two fight over the same property, so the
+    // first touch cancels the sweep
+    let sweeping = false;
 
     function set(pct){
       pct = Math.max(1, Math.min(99, pct));
@@ -2085,13 +2127,23 @@
     const fromX = x => ((x - stage.getBoundingClientRect().left) / stage.offsetWidth) * 100;
 
     stage.addEventListener('pointerdown', e=>{
+      // Safari begins a text selection on the mousedown that opens the drag;
+      // preventDefault here is what stops the blue wash over the frames
+      e.preventDefault();
+      // preventDefault also swallows the click-to-focus, so hand focus over by
+      // hand — the divider stays keyboard-reachable after a mouse grab
+      try{ div.focus({preventScroll:true}); }catch(_){ }
+      sweeping = false;
       dragging = true; stage.setPointerCapture(e.pointerId); set(fromX(e.clientX));
     });
+    stage.addEventListener('selectstart', e=>{ if(dragging) e.preventDefault(); });
+    stage.addEventListener('dragstart', e=> e.preventDefault());
     stage.addEventListener('pointermove', e=>{ if(dragging) set(fromX(e.clientX)); });
     ['pointerup','pointercancel'].forEach(ev=>
       stage.addEventListener(ev, e=>{ dragging=false; try{stage.releasePointerCapture(e.pointerId);}catch(_){} }));
 
     div.addEventListener('keydown', e=>{
+      sweeping = false;
       const cur = parseFloat(div.getAttribute('aria-valuenow'));
       if(e.key==='ArrowLeft'){ set(cur-3); e.preventDefault(); }
       if(e.key==='ArrowRight'){ set(cur+3); e.preventDefault(); }
@@ -2126,12 +2178,14 @@
       nudged = true;
       if(window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
       const t0 = performance.now();
+      sweeping = true;
       (function sweep(t){
+        if(!sweeping) return;                 // the user took over — leave it alone
         const p = Math.min((t - t0)/1400, 1);
         const e = p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2;
         stage.style.setProperty('--pos', (50 + Math.sin(e*Math.PI*2)*18) + '%');
         if(p<1) requestAnimationFrame(sweep);
-        else stage.style.setProperty('--pos','50%');
+        else { sweeping = false; stage.style.setProperty('--pos','50%'); }
       })(t0);
     }), {threshold:.4});
     io2.observe(stage);
