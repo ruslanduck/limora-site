@@ -228,9 +228,9 @@ document.documentElement.className+=' no-lens';}})();
   .cta-btn.ghost{background:transparent;color:var(--navy);border-color:var(--line);box-shadow:none;}
   .cta-btn.ghost:hover{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:0 12px 24px -14px rgba(28,39,64,.4);}
 
-  section{position:relative;padding:150px 0 120px;}
-  section.tight{padding:100px 0;}
-  @media (max-width:900px){section{padding:110px 0 80px;}}
+  section{position:relative;padding:96px 0 78px;}
+  section.tight{padding:70px 0;}
+  @media (max-width:900px){section{padding:70px 0 52px;}}
 
   .eyebrow{
     display:flex;align-items:center;gap:9px;
@@ -254,7 +254,7 @@ document.documentElement.className+=' no-lens';}})();
   .lede{font-size:19px;line-height:1.6;color:#3d3d3d;max-width:52ch;}
 
   /* HERO */
-  .hero{padding-top:200px;padding-bottom:90px;overflow:visible;}
+  .hero{padding-top:170px;padding-bottom:66px;overflow:visible;}
   .hero-grid{display:grid;grid-template-columns:1.4fr .9fr;gap:60px;align-items:end;}
   @media (max-width:960px){.hero-grid{grid-template-columns:1fr;gap:36px;}}
   .hero-cta-row{display:flex;gap:16px;margin-top:38px;flex-wrap:wrap;}
@@ -998,7 +998,7 @@ document.documentElement.className+=' no-lens';}})();
   .impact-cell p{color:#c7cede;font-size:14px;margin-top:10px;margin-bottom:0;}
 
   /* CTA band + demo form */
-  .cta-band{background:var(--navy);color:#fff;padding:100px 0;position:relative;overflow:hidden;}
+  .cta-band{background:var(--navy);color:#fff;padding:74px 0;position:relative;overflow:hidden;}
   .cta-band h2{color:#fff;max-width:20ch;}
   .cta-band p{color:#c7cede;max-width:46ch;}
   .cta-layout{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
@@ -1902,7 +1902,7 @@ document.documentElement.className+=' no-lens';}})();
           <div class="eyebrow" style="color:#c7cede;"><span class="num">→</span> Get started</div>
           <h2>See Limora running on your own catalog</h2>
           <p>Talk to us about a 2–4 week deployment, tailored to your PIM, your taxonomy, and your studio workflows. Tell us a bit about your team and we'll get back to you.</p>
-          <div class="partner-line" style="color:#8ea0c2;">Or email us directly at <a href="mailto:ruslan@limoracreative.io,paul@limoracreative.io" style="text-decoration:underline;">support@limoracreative.io</a></div>
+          <div class="partner-line" style="color:#8ea0c2;">Or email us directly at <a href="mailto:ruslan@limoracreative.io,pfoley@limoracreative.io" style="text-decoration:underline;">support@limoracreative.io</a></div>
         </div>
         <form class="demo-form reveal" id="demoForm">
           <div class="frow">
@@ -1925,7 +1925,7 @@ document.documentElement.className+=' no-lens';}})();
           </div>
           <button type="submit" class="cta-btn form-submit" id="formSubmitBtn">Request a demo <span class="btn-arrow">→</span></button>
           <div class="form-ok" id="formOk">Thanks – your message is on its way to our team.</div>
-          <div class="form-error" id="formError">Something went wrong sending that – please email <a href="mailto:ruslan@limoracreative.io,paul@limoracreative.io" style="text-decoration:underline;">us directly</a> instead.</div>
+          <div class="form-error" id="formError">Something went wrong sending that – please email <a href="mailto:ruslan@limoracreative.io,pfoley@limoracreative.io" style="text-decoration:underline;">us directly</a> instead.</div>
         </form>
       </div>
     </div>
@@ -2261,13 +2261,13 @@ document.documentElement.className+=' no-lens';}})();
   });
 
   // demo form – no backend needed: submits via FormSubmit's AJAX endpoint,
-  // which emails ruslan@limoracreative.io (cc: paul@limoracreative.io).
+  // which emails ruslan@limoracreative.io (cc: pfoley@limoracreative.io).
   // One-time setup: the very first real submission triggers a confirmation
   // email to ruslan@limoracreative.io – click the link in it once, or FormSubmit
   // will keep bouncing submissions silently.
   const demoForm = document.getElementById('demoForm');
   const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/ruslan@limoracreative.io';
-  const FORMSUBMIT_CC = 'paul@limoracreative.io';
+  const FORMSUBMIT_CC = 'pfoley@limoracreative.io';
 
   function isValidEmail(value){
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
